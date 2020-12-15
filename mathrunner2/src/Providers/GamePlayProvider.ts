@@ -1,15 +1,23 @@
-import { inject, provide, ref, Ref } from 'vue';
-import { Problem } from '../helpers/ProblemGenerator';
+import { inject, provide, reactive, ref, Ref } from 'vue';
+import { generateProblem, Problem } from '../helpers/ProblemGenerator';
 
 export class GamePlayProvider {
 
     // public problemQueue: Problem[];
-    public timer: Ref<number>; 
-    public animationTimeFrame: Ref<number>; 
-        
+    public timer: Ref<number>;
+    public animationTimeFrame: Ref<number>;
+    public health: Ref<number>;
+    public problem: Ref<Problem>;
+    public playerChoiceindex: Ref<number>
+    public rightAnswer: Ref<number>
+
     constructor() {
         this.timer = ref(0);
+        this.rightAnswer = ref(0);
         this.animationTimeFrame = ref(1);
+        this.health = ref(3);
+        this.problem = ref(generateProblem());
+        this.playerChoiceindex = ref(1);
     }
 
     updateTimer(delta: number) {
@@ -29,7 +37,7 @@ export function useGamePlayProvider() {
     return provider;
 }
 
-export function useGamePlayContext(): any {
+export function useGamePlayContext(): GamePlayProvider {
     const context = inject<GamePlayProvider>(GamePlay_Context);
     if (!context) {
         throw new Error('Provider need context');

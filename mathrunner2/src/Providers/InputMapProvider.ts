@@ -51,7 +51,7 @@ export function useInputMapProvider() {
   return provider;
 }
 
-export function useInputMapContext(): any {
+export function useInputMapContext(): InputMapProvider  {
   const context = inject<InputMapProvider>(InputMapContext);
   if (!context) {
     throw new Error('Provider need context');

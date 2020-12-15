@@ -2,6 +2,7 @@ import { GameControls, InputMapProvider } from '../Providers/InputMapProvider'
 import * as BABYLON from "babylonjs"
 import { ActionManager, ExecuteCodeAction, Mesh, Scene } from 'babylonjs'
 import { GamePlayProvider } from '@/Providers/GamePlayProvider'
+import { location } from "./Wave"
 
 export class PlayerController {
 
@@ -20,23 +21,7 @@ export class PlayerController {
         this.playerMesh = BABYLON.Mesh.CreateBox("player", 0.5, scene);
         this.playerMesh.material = this.scene.getMaterialByName("player-material");
         this.playerMesh.actionManager = new ActionManager(this.scene);
-        this.playerMesh.actionManager.registerAction(new ExecuteCodeAction(
-            {
-                trigger: ActionManager.OnIntersectionEnterTrigger,
-                parameter: this.scene.getMeshByName("unbreakable")
-            }, (event) => {
-                console.log(event);
-                this.health -= 1;
-                //collide with unbreakable block, health -1
-                if (this.health <= 0) {
-                    //kill this mesh
-                    //go to end game state
-                    //animation    
-                    
-                }
-            }))
-
-        this.scene.onBeforeAnimationsObservable.add(this.detectMovement.bind(this))
+        this.scene.onBeforeRenderObservable.add(this.detectMovement.bind(this))
     }
 
     detectMovement() {
@@ -56,6 +41,7 @@ export class PlayerController {
     }
 
     moveZ(pos: number) {
+        console.log("moving z");
         if(this.gamePlayProvider.animationTimeFrame.value == 1) {
             if(pos > 0) {
                 this.gamePlayProvider.setAnimationTimeFrame(1.5);
@@ -76,7 +62,18 @@ export class PlayerController {
     }
 
     moveX(pos: number) {
-        const { x, y, z } = this.playerMesh.position
-        this.playerMesh.position.set(x + pos, y, z);
+        console.log("moving x");
+        const current = this.gamePlayProvider.playerChoiceindex.value;
+        if(location[current] === undefined) {
+            this.gamePlayProvider.playerChoiceindex.value = 1;
+        }
+        const nextIndex = current + pos;
+        if(location[nextIndex] !== undefined) {
+            this.gamePlayProvider.playerChoiceindex.value = nextIndex;
+            this.playerMesh.position.set(location[nextIndex], 0, 0);
+        } else {
+            console.log(this.gamePlayProvider.playerChoiceindex.value);
+            console.log("hit boundary")
+        }
     }
 }

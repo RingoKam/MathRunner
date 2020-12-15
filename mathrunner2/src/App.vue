@@ -1,12 +1,12 @@
 <template>
-  <div class="app" @keyup="captureKeyUp">
+  <div class="app">
     <GameHUD />
     <Game />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { useGamePlayProvider } from "./Providers/GamePlayProvider";
 import { useGameStateProvider } from "./Providers/GameStateProvider";
 import { useInputMapProvider } from "./Providers/InputMapProvider";
@@ -24,6 +24,13 @@ export default defineComponent({
     const captureKeyUp = (e: any) => {
       inputMap.captureKeyUp(e.key);
     }
+
+    onMounted(() => {
+      document.addEventListener("keyup", (event) => {
+        inputMap.captureKeyUp(event.key);
+      })
+    }) 
+
     return {
       captureKeyUp
     }

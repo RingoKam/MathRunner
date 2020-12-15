@@ -5,7 +5,8 @@ import * as BABYLON from "babylonjs"
 import { Color4 } from 'babylonjs';
 
 import { PlayerController } from './PlayerController';
-import { Unbreakable } from './Unbreakable';
+import { Wave } from './Wave';
+import { generateProblem } from '@/helpers/ProblemGenerator';
 
 export class Game {
 
@@ -13,13 +14,19 @@ export class Game {
     scene: BABYLON.Scene
     player: PlayerController;
     camera: BABYLON.FreeCamera;
-    unbreakable: Unbreakable;
-
-    constructor(canvasDom: HTMLCanvasElement, gameContext: { 
+    unbreakable: Wave;
+    gameContext: {
         gameState: GameStateProvider,
         inputMap: InputMapProvider,
-        gamePlay: GamePlayProvider 
+        gamePlay: GamePlayProvider
+    }
+
+    constructor(canvasDom: HTMLCanvasElement, gameContext: {
+        gameState: GameStateProvider,
+        inputMap: InputMapProvider,
+        gamePlay: GamePlayProvider
     }) {
+        this.gameContext = gameContext;
         this.engine = new BABYLON.Engine(canvasDom, true);
         this.scene = new BABYLON.Scene(this.engine);
         this.camera = this.createCamera();
@@ -27,28 +34,64 @@ export class Game {
         this.predefinedMaterial();
 
         //turn on debugger
-        this.scene.debugLayer.show();
+        // this.scene.debugLayer.show();
 
-        this.unbreakable = new Unbreakable(this.scene, gameContext.gamePlay);
+        this.unbreakable = new Wave(this.scene, gameContext.gamePlay);
         this.player = new PlayerController(this.scene, gameContext.inputMap, gameContext.gamePlay);
+
+        this.engine.runRenderLoop(() => {
+            this.scene.render();
+        })
+
+        window.addEventListener('resize', () => {
+            this.engine.resize();
+        });
     }
 
     async GameLoop(): Promise<void> {
         //setup game state
         this.setInitialGameState();
-        this.engine.runRenderLoop(() => {
-            this.scene.render();
+
+        let { animation, answers } = this.unbreakable.createWave();
+
+        const solutions = this.gameContext.gamePlay.problem.value.solutions;
+        answers.forEach((answer, i) => {
+            answer.setText(solutions[i]);
         })
-        let enemy = this.unbreakable.createWave();
+
+        animation.onAnimationLoop = () => {
+            //check if player get the right answer
+            const { playerChoiceindex, problem, health, rightAnswer } = this.gameContext.gamePlay
+            console.log(playerChoiceindex.value);
+            console.log(problem.value.solutionIndex);
+            if (playerChoiceindex.value == problem.value.solutionIndex) {
+                rightAnswer.value += 1;
+            } else {
+                health.value -= 1;
+            }
+
+            //check win condition
+            if (health.value <= 0) {
+                animation.stop();
+                this.gameContext.gameState.gameComplete();
+            }
+
+            //else game goes on
+            this.gameContext.gamePlay.problem.value = generateProblem();
+            const solutions = this.gameContext.gamePlay.problem.value.solutions;
+            answers.forEach((answer, i) => {
+                answer.setText(solutions[i]);
+            })
+        }
     }
 
     predefinedMaterial() {
         var mat = new BABYLON.StandardMaterial("player-material", this.scene);
         mat.emissiveColor = BABYLON.Color3.FromHexString("#ffecd6");
-        
+
         var enemymat = new BABYLON.StandardMaterial("unbreakable", this.scene);
         enemymat.emissiveColor = new BABYLON.Color3(0.051, 0.169, 0.271);
-        
+
         var mat2 = new BABYLON.StandardMaterial("breakable", this.scene);
         mat2.emissiveColor = new BABYLON.Color3(1, 0.169, 0.271);
         mat2.alpha = 0.5;
@@ -56,7 +99,7 @@ export class Game {
 
     setInitialGameState() {
         this.scene.clearColor = new Color4(1, 0.667, 0.369);
-       
+
     }
 
     createCamera() {

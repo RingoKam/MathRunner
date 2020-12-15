@@ -9,18 +9,28 @@ export interface Problem {
 }
 
 export function generateProblem() {
-    const var1 = 1;
-    const var2 = 1;
-    const operator = "+"
-    const solution = eval(`${var1}${operator}${var2}`);
-    const solutions = shuffleArray([solution, 3, 2]);
-    const solutionIndex = solutions.find(v => v === solution);
-    return {
-        var1,
-        var2,
-        operator,
-        solutions,
-        solutionIndex
+    const var1 = randomIndex(10);
+    const var2 = randomIndex(10);
+    const operator = operators[randomIndex(operators.length - 1)];
+    try {
+        const solution = round(eval(`${var1}${operator}${var2}`));
+        const fake1 = generateFake([solution]);
+        const fake2 = generateFake([solution, fake1]);
+        const solutions = shuffleArray([fake1, solution, fake2]);
+        const solutionIndex = solutions.findIndex(v => v == solution);
+        if(solutionIndex == -1) {
+            debugger;
+        }
+        return {
+            var1,
+            var2,
+            operator,
+            solutions,
+            solutionIndex
+        }
+    } catch (error) {
+        console.error(`${var1}${operator}${var2}`);
+        console.error(error);
     }
 }
 
@@ -32,4 +42,21 @@ function shuffleArray(array: any[]): any[] {
         array[j] = temp;
     }
     return array;
+}
+
+function randomIndex(length: number): number {
+    return Math.floor((Math.random() * length) + 1);
+}
+
+function round(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100
+}
+
+function generateFake(answer: number[]) {
+    const fake = randomIndex((answer[0] + 10)  * 2);
+    if(answer.includes(fake)) {
+        return generateFake(answer);
+    } else {
+        return fake;
+    }
 }
