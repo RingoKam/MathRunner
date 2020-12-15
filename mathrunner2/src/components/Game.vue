@@ -7,35 +7,30 @@
 <script lang="ts">
 import { onMounted, ref } from "vue";
 import { Game } from "../Scenes/Game";
-import {
-  useGameStateContext,
-} from "../Providers/GameStateProvider";
-import {
-  useInputMapContext
-} from "../Providers/InputMapProvider";
-import {
-  useGamePlayContext,
-} from "../Providers/GamePlayProvider";
+import { useGameStateContext } from "../Providers/GameStateProvider";
+import { useInputMapContext } from "../Providers/InputMapProvider";
+import { useGamePlayContext } from "../Providers/GamePlayProvider";
 
 export default {
   setup() {
     const gameState = useGameStateContext();
     const inputMap = useInputMapContext();
     const gamePlay = useGamePlayContext();
-
-    const gameCanvas = ref(null);
+    const gameCanvas = ref();
 
     onMounted(() => {
-      const game = new Game(gameCanvas.value, {
-        gameState,
-        inputMap,
-        gamePlay,
-      });
-      game.GameLoop();
+      if (gameCanvas.value) {
+        const game = new Game(gameCanvas.value, {
+          gameState,
+          inputMap,
+          gamePlay,
+        });
+        game.GameLoop();
+      }
     });
 
     return {
-      gameCanvas
+      gameCanvas,
     };
   },
 };

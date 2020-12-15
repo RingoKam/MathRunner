@@ -25,18 +25,18 @@ export class InputMapProvider {
     this.inputMap.clear();
   }
 
-  captureKeyUp(key) {
+  captureKeyUp(key: any) {
     switch (key) {
-      case "ArrowDown":
+      case "s":
         this.setInput(GameControls.Down);
         break;
-      case "ArrowRight":
+      case "d":
         this.setInput(GameControls.Right);
         break;
-      case "ArrowUp":
+      case "w":
         this.setInput(GameControls.Up)
         break;
-      case "ArrowLeft":
+      case "a":
         this.setInput(GameControls.Left)
         break;
       default:
