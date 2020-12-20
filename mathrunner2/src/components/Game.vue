@@ -5,9 +5,12 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Game } from "../Scenes/Game";
-import { useGameStateContext } from "../Providers/GameStateProvider";
+import {
+  PossibleGameState,
+  useGameStateContext,
+} from "../Providers/GameStateProvider";
 import { useInputMapContext } from "../Providers/InputMapProvider";
 import { useGamePlayContext } from "../Providers/GamePlayProvider";
 
@@ -17,20 +20,49 @@ export default {
     const inputMap = useInputMapContext();
     const gamePlay = useGamePlayContext();
     const gameCanvas = ref();
+    let game: Game = null;
 
     onMounted(() => {
       if (gameCanvas.value) {
-        const game = new Game(gameCanvas.value, {
+        game = new Game(gameCanvas.value, {
           gameState,
           inputMap,
           gamePlay,
         });
+      }
+    });
+
+    const gameWatch = watch(gameState.GameState, (cur, pre) => {
+      if (
+        pre === PossibleGameState.startMenu &&
+        cur === PossibleGameState.ongoing
+      ) {
+        //start the game
         game.GameLoop();
       }
+      // if (cur === PossibleGameState.pause) {
+      //   game.engine.stopRenderLoop();
+      // }
+      // if (
+      //   pre === PossibleGameState.pause &&
+      //   cur === PossibleGameState.ongoing
+      // ) {
+      //   //start the game
+      //   game.engine.runRenderLoop(() => {
+      //     game.scene.render();
+      //   });
+      // }
+      // if (pre === PossibleGameState.done && cur === PossibleGameState.ongoing) {
+      //   //start the game
+      //   game.engine.runRenderLoop(() => {
+      //     game.GameLoop();
+      //   });
+      // }
     });
 
     return {
       gameCanvas,
+      gameWatch,
     };
   },
 };

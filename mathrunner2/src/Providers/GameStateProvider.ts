@@ -8,10 +8,10 @@ export enum PossibleGameState {
 }
 
 export class GameStateProvider {
-    public GameState: Ref<PossibleGameState> 
+    public GameState: Ref<PossibleGameState> = ref();
 
     constructor(initialState: PossibleGameState = PossibleGameState.startMenu) {
-        this.GameState = ref(initialState);
+        this.GameState.value = initialState;
     }
 
     startGame() {
@@ -35,7 +35,7 @@ export function useGameStateProvider() {
     return gameStateProvider;
 }
 
-export function useGameStateContext()  {
+export function useGameStateContext(): GameStateProvider {
     const context = inject<GameStateProvider>(GAMESTATE_CONTEXT);
     if(!context) {
         throw new Error("provider need context")

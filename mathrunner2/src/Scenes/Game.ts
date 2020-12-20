@@ -2,7 +2,7 @@ import { GamePlayProvider } from '../Providers/GamePlayProvider';
 import { GameStateProvider } from '../Providers/GameStateProvider';
 import { InputMapProvider } from '../Providers/InputMapProvider';
 import * as BABYLON from "babylonjs"
-import { Color4 } from 'babylonjs';
+import { Color4, Vector3, Vector4 } from 'babylonjs';
 
 import { PlayerController } from './PlayerController';
 import { Wave } from './Wave';
@@ -31,10 +31,12 @@ export class Game {
         this.scene = new BABYLON.Scene(this.engine);
         this.camera = this.createCamera();
         this.scene.actionManager = new BABYLON.ActionManager(this.scene);
+        
         this.predefinedMaterial();
+        this.setGameScene();
 
         //turn on debugger
-        // this.scene.debugLayer.show();
+        this.scene.debugLayer.show();
 
         this.unbreakable = new Wave(this.scene, gameContext.gamePlay);
         this.player = new PlayerController(this.scene, gameContext.inputMap, gameContext.gamePlay);
@@ -49,21 +51,16 @@ export class Game {
     }
 
     async GameLoop(): Promise<void> {
-        //setup game state
-        this.setInitialGameState();
-
         let { animation, answers } = this.unbreakable.createWave();
 
         const solutions = this.gameContext.gamePlay.problem.value.solutions;
         answers.forEach((answer, i) => {
             answer.setText(solutions[i]);
         })
-
+ 
         animation.onAnimationLoop = () => {
             //check if player get the right answer
             const { playerChoiceindex, problem, health, rightAnswer } = this.gameContext.gamePlay
-            console.log(playerChoiceindex.value);
-            console.log(problem.value.solutionIndex);
             if (playerChoiceindex.value == problem.value.solutionIndex) {
                 rightAnswer.value += 1;
             } else {
@@ -95,11 +92,20 @@ export class Game {
         var mat2 = new BABYLON.StandardMaterial("breakable", this.scene);
         mat2.emissiveColor = new BABYLON.Color3(1, 0.169, 0.271);
         mat2.alpha = 0.5;
+
+        var mat3 = new BABYLON.StandardMaterial("ground", this.scene);
+        mat3.emissiveColor = BABYLON.Color3.FromHexString("#203c56");
     }
 
-    setInitialGameState() {
+    setGameScene() {
         this.scene.clearColor = new Color4(1, 0.667, 0.369);
-
+        const ground = BABYLON.MeshBuilder.CreatePlane("road", {
+            width: 11,
+            height: 1000,
+        }, this.scene)
+        ground.material = this.scene.getMaterialByName("ground")
+        ground.position = new Vector3(0, -1, 0);
+        ground.rotate(new BABYLON.Vector3(1, 0, 0), 1.5708);
     }
 
     createCamera() {
