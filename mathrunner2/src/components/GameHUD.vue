@@ -1,9 +1,14 @@
 <template>
   <div class="game-hud">
     <div class="header">
-      <div class="health" v-if="state === 2">HP: {{ health }}</div>
+      <div class="health" v-if="state === 2">
+        <div>HP: {{ health }}</div>
+        <div>Speed: {{ speed }}</div>
+      </div>
       <div class="height" v-if="state === 2">Score: {{ rightAnswer }}</div>
-      <div class="setting" v-if="state === 2">Speed: {{ speed }}</div>
+      <div class="setting" v-if="state === 2">
+        <button @click="pauseGame">Pause</button>
+      </div>
     </div>
     <div class="content">
       <div v-if="state === 0">
@@ -14,6 +19,7 @@
       </div>
       <div v-if="state === 3">
         <div class="GameOver">Game Over 😢</div>
+        <button @click="startGame">Restart</button>
       </div>
     </div>
     <div class="footer">
@@ -60,11 +66,17 @@ export default {
     const startGame = () => {
       gameState.startGame();
     };
+
+    const pauseGame = () => {
+      gameState.pauseGame();
+    };
+
     return {
       health,
       gameProblem,
       state,
       startGame,
+      pauseGame,
       rightAnswer,
       speed,
     };

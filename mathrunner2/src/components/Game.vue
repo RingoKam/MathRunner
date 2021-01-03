@@ -20,6 +20,7 @@ export default {
     const inputMap = useInputMapContext();
     const gamePlay = useGamePlayContext();
     const gameCanvas = ref();
+    const isLoading = ref(false)
     let game: Game = null;
 
     onMounted(() => {
@@ -29,6 +30,8 @@ export default {
           inputMap,
           gamePlay,
         });
+        game.toggleDebugger();
+        game.loadGameAsset();
       }
     });
 
@@ -38,26 +41,22 @@ export default {
         cur === PossibleGameState.ongoing
       ) {
         //start the game
-        game.GameLoop();
+        game.startGame();
       }
-      // if (cur === PossibleGameState.pause) {
-      //   game.engine.stopRenderLoop();
-      // }
-      // if (
-      //   pre === PossibleGameState.pause &&
-      //   cur === PossibleGameState.ongoing
-      // ) {
-      //   //start the game
-      //   game.engine.runRenderLoop(() => {
-      //     game.scene.render();
-      //   });
-      // }
-      // if (pre === PossibleGameState.done && cur === PossibleGameState.ongoing) {
-      //   //start the game
-      //   game.engine.runRenderLoop(() => {
-      //     game.GameLoop();
-      //   });
-      // }
+      if (cur === PossibleGameState.pause) {
+        game.pauseGame();
+      }
+      if (
+        pre === PossibleGameState.pause &&
+        cur === PossibleGameState.ongoing
+      ) {
+        game.resumeGame();
+      }
+      if (pre === PossibleGameState.done && cur === PossibleGameState.ongoing) {
+        //start the game
+       gamePlay.resetGame();
+       game.startGame();
+      }
     });
 
     return {
