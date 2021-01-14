@@ -19,7 +19,7 @@ export class Answer {
         this.txtPlane.material = this.textMaterial;
 
         this.boxMesh = BABYLON.Mesh.CreateBox("answerbox", 1, this.scene);
-        this.boxMesh.material = scene.getMaterialByName("unbreakable");
+        this.boxMesh.material = scene.getMaterialByName("sign");
         this.boxMesh.position = new Vector3(0, 0, 0);
 
         //assign it to parent

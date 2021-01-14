@@ -16,7 +16,7 @@ export class GamePlayProvider {
         this.rightAnswer = ref(0);
         this.animationTimeFrame = ref(1);
         this.health = ref(3);
-        this.problem = ref(generateProblem());
+        this.problem = ref(null);
         this.playerChoiceindex = ref(1);
     }
 
@@ -26,6 +26,13 @@ export class GamePlayProvider {
 
     setAnimationTimeFrame(timeFrame: number) {
         this.animationTimeFrame.value = timeFrame;
+    }
+
+    resetGame() {
+        this.timer.value = 0;
+        this.animationTimeFrame.value = 1;
+        this.health.value = 3;
+        this.rightAnswer.value = 0;
     }
 }
 

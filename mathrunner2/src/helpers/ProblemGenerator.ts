@@ -1,3 +1,5 @@
+import { randomInArray, randomIndex } from './Random';
+
 const operators = ["+", "-", "*", "/"];
 
 export interface Problem {
@@ -11,7 +13,7 @@ export interface Problem {
 export function generateProblem() {
     const var1 = randomIndex(10);
     const var2 = randomIndex(10);
-    const operator = operators[randomIndex(operators.length - 1)];
+    const operator = randomInArray(operators);
     try {
         const solution = round(eval(`${var1}${operator}${var2}`));
         const fake1 = generateFake([solution]);
@@ -42,10 +44,6 @@ function shuffleArray(array: any[]): any[] {
         array[j] = temp;
     }
     return array;
-}
-
-function randomIndex(length: number): number {
-    return Math.floor((Math.random() * length) + 1);
 }
 
 function round(num) {
