@@ -1,11 +1,7 @@
-# mathrunner2
+# Math Runner
 
 
 ## Assets
-wrong answer buzz - https://freesound.org/people/SgtPepperArc360/sounds/341732/
-correct answer sound - https://freesound.org/people/renatalmar/sounds/264981/
-Car model - https://www.kenney.nl/assets/car-kit
-Tree model - http://quaternius.com/?i=2
 
 ## Project setup
 ```
@@ -25,8 +21,11 @@ npm run build
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-
 ### Assets
+Audio:
+wrong answer buzz - https://freesound.org/people/SgtPepperArc360/sounds/341732/
+correct answer sound - https://freesound.org/people/renatalmar/sounds/264981/
+
 Car Model:
 https://www.kenney.nl/assets/car-kit
 
