@@ -1,5 +1,5 @@
 # Math Runner
-![image](https://user-images.githubusercontent.com/10913199/135389670-7423353b-8e8f-46ce-85aa-40bc694c9a4b.png)
+![image](https://user-images.githubusercontent.com/10913199/135389819-97bef430-630d-409a-833b-3d439b1ec160.png)
 
 A simple game made with BabylonJS and Vue
 Talk slides: https://slides.com/ringokam/fun-with-babylonjs-vue-ts
