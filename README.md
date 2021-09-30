@@ -1,5 +1,7 @@
 # Math Runner
 
+A simple game made with BabylonJS and Vue
+Talk slides: https://slides.com/ringokam/fun-with-babylonjs-vue-ts
 
 ## Assets
 
