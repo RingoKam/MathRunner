@@ -30,7 +30,7 @@ export default {
           inputMap,
           gamePlay,
         });
-        game.toggleDebugger();
+        // game.toggleDebugger();
         game.loadGameAsset();
       }
     });

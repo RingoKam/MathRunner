@@ -12,7 +12,13 @@
     </div>
     <div class="content">
       <div v-if="state === 0">
-        <button @click="startGame">Start Game</button>
+        <div>
+          <p>Drive your car into the right answer!</p>
+          <p>Use KEY "A" and "D" to move sideways</p>
+          <p>W to speed up</p>
+          <p>S to slow down</p>
+          <button @click="startGame">Start Game</button>
+        </div>
       </div>
       <div v-if="state === 1">
         <button @click="startGame">Resume Game</button>

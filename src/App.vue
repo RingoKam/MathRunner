@@ -21,9 +21,9 @@ export default defineComponent({
     useGamePlayProvider();
     useGameStateProvider();
 
-    const captureKeyUp = (e: any) => {
-      inputMap.captureKeyUp(e.key);
-    }
+    // const captureKeyUp = (e: any) => {
+    //   inputMap.captureKeyUp(e.key);
+    // }
 
     onMounted(() => {
       document.addEventListener("keyup", (event) => {
@@ -32,7 +32,7 @@ export default defineComponent({
     }) 
 
     return {
-      captureKeyUp
+      // captureKeyUp
     }
   },
 });
