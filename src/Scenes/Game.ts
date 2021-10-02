@@ -2,7 +2,7 @@ import { GamePlayProvider } from '../Providers/GamePlayProvider';
 import { GameStateProvider } from '../Providers/GameStateProvider';
 import { InputMapProvider } from '../Providers/InputMapProvider';
 import * as BABYLON from "babylonjs"
-import { Color4, SceneLoader, Vector3, Vector4, AssetsManager } from 'babylonjs';
+import { Color4, SceneLoader, Vector3, Vector4, AssetsManager, Sound } from 'babylonjs';
 import "@babylonjs/loaders/glTF";
 
 
@@ -19,6 +19,8 @@ export class Game {
     player: PlayerController;
     camera: BABYLON.FreeCamera;
     wave: Wave;
+    private crashSound: Sound
+    private correctSound: Sound
     gameContext: {
         gameState: GameStateProvider,
         inputMap: InputMapProvider,
@@ -36,6 +38,9 @@ export class Game {
         this.camera = this.createCamera();
         this.scene.actionManager = new BABYLON.ActionManager(this.scene);
         
+        this.crashSound = new Sound("wrong_answer", "wrong-answer.wav", this.scene)
+        this.correctSound = new Sound("correct_answer", "correct-answer.wav", this.scene)
+
         var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), this.scene);
         light.specular = new BABYLON.Color3(1,1,1)
 
@@ -62,8 +67,10 @@ export class Game {
             //check if player get the right answer
             const { playerChoiceindex, problem, health, rightAnswer } = this.gameContext.gamePlay
             if (playerChoiceindex.value == problem.value.solutionIndex) {
+                this.correctSound.play();
                 rightAnswer.value += 1;
             } else {
+                this.crashSound.play();
                 this.player.crash()
                 health.value -= 1;
             }
