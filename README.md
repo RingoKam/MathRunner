@@ -22,6 +22,11 @@ npm run build
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+### TODO
+1. Animation on Game Start
+2. Animation on Game End
+3. Play Audio 
+
 ### Assets
 Audio:
 wrong answer buzz - https://freesound.org/people/SgtPepperArc360/sounds/341732/
