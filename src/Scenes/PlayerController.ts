@@ -72,7 +72,7 @@ export class PlayerController {
     }
 
     async loadPlayer() {
-        return SceneLoader.ImportMeshAsync("sedan", `http://${window.location.host}/model/`, "car.babylon", this.scene).then((v) => {
+        return SceneLoader.ImportMeshAsync("sedan", `/model/`, "car.babylon", this.scene).then((v) => {
             v.meshes[0].setParent(this.player);
         })
     }

@@ -18,7 +18,7 @@ export default class Scenary {
 
     async loadScenary() {
         const promises = ["DeadTree_1", "DeadTree_2", "DeadTree_3"].map(fileName => {
-            return SceneLoader.ImportMeshAsync(fileName, `http://${window.location.host}/model/`, `${fileName}.babylon`, this.scene).then(obj => {
+            return SceneLoader.ImportMeshAsync(fileName, `/model/`, `${fileName}.babylon`, this.scene).then(obj => {
                 const mesh = obj.meshes[0] as Mesh
                 mesh.isVisible = false
                 mesh.position = new Vector3(0, -100, 0);
