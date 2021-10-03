@@ -15,6 +15,7 @@ export class PlayerController {
     private speedUoAnimation: Animation;
     private moveLeftAnimation: Animation;
     private moveRightAnimation: Animation;
+    private moveZAnimation: Animation;
 
 
     constructor(scene: Scene, inputMap: InputMapProvider, gamePlayProvider: GamePlayProvider) {
@@ -55,9 +56,15 @@ export class PlayerController {
             { frame: 1 * framerate, value: 0 }
         ]
         this.moveRightAnimation.setKeys(tilt_right_keys);
-        const tilt_left_keys = tilt_right_keys.map(framekey => ({ frame: framekey.frame, value: -framekey.value}));
+        const tilt_left_keys = tilt_right_keys.map(framekey => ({ frame: framekey.frame, value: -framekey.value }));
         this.moveLeftAnimation = new Animation("moveleft", "rotation.y", framerate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CYCLE)
         this.moveLeftAnimation.setKeys(tilt_left_keys);
+
+        this.moveZAnimation = new Animation("moveZ", "position.z", framerate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONTYPE_FLOAT)
+        this.moveZAnimation.setKeys([
+            { frame: 0 * framerate, value: -5 },
+            { frame: 1 * framerate, value: 0 }
+        ])
     }
 
     crash() {
@@ -79,11 +86,11 @@ export class PlayerController {
             this.moveZ(1);
         }
         if (this.inputMap.inputMap.has(GameControls.Left)) {
-            this.scene.beginDirectAnimation(this.player, [this.moveLeftAnimation], 0, 30, false);    
+            this.scene.beginDirectAnimation(this.player, [this.moveLeftAnimation], 0, 30, false);
             this.moveX(-1);
         }
         if (this.inputMap.inputMap.has(GameControls.Right)) {
-            this.scene.beginDirectAnimation(this.player, [this.moveRightAnimation], 0, 30, false);    
+            this.scene.beginDirectAnimation(this.player, [this.moveRightAnimation], 0, 30, false);
             this.moveX(1);
         }
         this.inputMap.resetControls();
@@ -122,5 +129,13 @@ export class PlayerController {
             console.log(this.gamePlayProvider.playerChoiceindex.value);
             console.log("hit boundary")
         }
+    }
+
+    carOffScreen() {
+        this.scene.beginDirectAnimation(this.player, [this.moveZAnimation], 30, 0, false);
+    }
+
+    carOnScreen() {
+        this.scene.beginDirectAnimation(this.player, [this.moveZAnimation], 0, 30, false);
     }
 }

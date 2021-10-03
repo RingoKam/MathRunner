@@ -19,8 +19,13 @@ export class Game {
     player: PlayerController;
     camera: BABYLON.FreeCamera;
     wave: Wave;
+    
     private crashSound: Sound
     private correctSound: Sound
+    private carStart: Sound
+    private carGoing: Sound
+    private carStopped: Sound
+
     gameContext: {
         gameState: GameStateProvider,
         inputMap: InputMapProvider,
@@ -40,6 +45,10 @@ export class Game {
         
         this.crashSound = new Sound("wrong_answer", "wrong-answer.wav", this.scene)
         this.correctSound = new Sound("correct_answer", "correct-answer.wav", this.scene)
+        this.carStart = new Sound("car_start", "car_start.wav", this.scene)
+        this.carGoing = new Sound("car_going", "car_idle.wav", this.scene, null, { loop: true })
+        this.carStopped = new Sound("car_off", "car_off.wav", this.scene)
+
 
         var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), this.scene);
         light.specular = new BABYLON.Color3(1,1,1)
@@ -61,6 +70,11 @@ export class Game {
     }
 
     public startGame() {
+        this.player.carOnScreen()
+        //move car from offscreen to the screen
+        this.carStart.play(0, 0, 3);
+        this.carGoing.play(3, 0)
+
         this.wave.createWave(); 
         this.scenary.GenerateScenary();     
         this.wave.onWaveEnd.add(() => {
@@ -76,6 +90,9 @@ export class Game {
             }
             //check lose condition
             if (health.value <= 0) {
+                this.player.carOffScreen()
+                this.carGoing.stop();
+                this.carStopped.play();
                 this.gameContext.gameState.gameComplete();
                 this.wave.reset();
             } else {

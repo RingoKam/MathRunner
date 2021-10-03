@@ -11,20 +11,14 @@
       </div>
     </div>
     <div class="content">
-      <div v-if="state === 0">
-        <div>
-          <p>Drive your car into the right answer!</p>
-          <p>Use KEY "A" and "D" to move sideways</p>
-          <p>W to speed up</p>
-          <p>S to slow down</p>
-          <button @click="startGame">Start Game</button>
-        </div>
-      </div>
       <div v-if="state === 1">
         <button @click="startGame">Resume Game</button>
       </div>
-      <div v-if="state === 3">
-        <div class="GameOver">Game Over 😢</div>
+      <div 
+        v-if="state === 3"
+        class="game-over"
+      >
+        <div>Game Over 😢</div>
         <button @click="startGame">Restart</button>
       </div>
     </div>
@@ -38,14 +32,30 @@
 
 <script>
 import { useGamePlayContext } from "@/Providers/GamePlayProvider";
-import { computed, watch } from "vue";
+import { computed, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
 import { useInputMapContext } from "@/Providers/InputMapProvider";
-import { useGameStateContext } from "@/Providers/GameStateProvider";
+import {
+  useGameStateContext,
+  PossibleGameState,
+} from "@/Providers/GameStateProvider";
 export default {
   setup() {
     const gamePlay = useGamePlayContext();
     const inputState = useInputMapContext();
     const gameState = useGameStateContext();
+    const router = useRouter();
+
+    const state = gameState.GameState;
+
+    //guard
+    console.log(state.value);
+
+    onMounted(() => {
+      if (gameState.GameState.value === PossibleGameState.startMenu) {
+        router.push("menu");
+      }
+    });
 
     const gameProblem = computed(() => {
       if (!gamePlay.problem.value) {
@@ -55,19 +65,24 @@ export default {
       return `${var1} ${operator} ${var2} = ?`;
     });
 
-    const health = gamePlay.health;
+    const health = computed(() => {
+      let hp = "";
+      for (var i = 0; i < gamePlay.health.value; i++) {
+        hp += "🚗";
+      }
+      return hp;
+    });
     const speed = computed(() => {
       const v = gamePlay.animationTimeFrame.value;
       if (v === 1.5) {
-        return "🏃‍♀️🏃‍♀️🏃‍♀️";
+        return "💨💨💨";
       } else if (v === 1) {
-        return "🏃‍♀️🏃‍♀️";
+        return "💨💨";
       } else if (v === 0.75) {
-        return "🏃‍♀️";
+        return "💨";
       }
     });
     const rightAnswer = gamePlay.rightAnswer;
-    const state = gameState.GameState;
 
     const startGame = () => {
       gameState.startGame();
@@ -125,7 +140,10 @@ export default {
   color: white;
 }
 
-.GameOver {
+.game-over {
+  display: flex;
+  flex-direction: column;
   font-size: 60px;
+
 }
 </style>

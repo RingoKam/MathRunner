@@ -14,6 +14,9 @@ import {
 import { useInputMapContext } from "../Providers/InputMapProvider";
 import { useGamePlayContext } from "../Providers/GamePlayProvider";
 
+/**
+ * This is where we host our BabylonJS canvas 
+ */
 export default {
   setup() {
     const gameState = useGameStateContext();

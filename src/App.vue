@@ -1,12 +1,16 @@
 <template>
   <div class="app">
-    <GameHUD />
+    <!-- router holds the game HUD -->
+    <div class="vue-hud">
+      <router-view></router-view>
+    </div>
+    <!--Our babylonJS game -->
     <Game />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, onUnmounted } from "vue";
 import { useGamePlayProvider } from "./Providers/GamePlayProvider";
 import { useGameStateProvider } from "./Providers/GameStateProvider";
 import { useInputMapProvider } from "./Providers/InputMapProvider";
@@ -15,28 +19,31 @@ import GameHUD from "./components/GameHUD.vue";
 
 export default defineComponent({
   name: "App",
-  components: {Game, GameHUD},
+  components: { Game, GameHUD },
   setup() {
     const inputMap = useInputMapProvider();
     useGamePlayProvider();
     useGameStateProvider();
 
-    // const captureKeyUp = (e: any) => {
-    //   inputMap.captureKeyUp(e.key);
-    // }
+    const captureKeys = (event) => {
+      inputMap.captureKeyUp(event.key);
+    };
 
     onMounted(() => {
-      document.addEventListener("keyup", (event) => {
-        inputMap.captureKeyUp(event.key);
-      })
-    }) 
-
-    return {
-      // captureKeyUp
-    }
+      document.addEventListener("keyup", captureKeys);
+    });
+  
+    onUnmounted(() => {
+      document.removeEventListener("keyup", captureKeys)
+    });
   },
 });
 </script>
 
-<style>
+<style scoped>
+.vue-hud {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
 </style>
