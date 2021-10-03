@@ -14,10 +14,7 @@
       <div v-if="state === 1">
         <button @click="startGame">Resume Game</button>
       </div>
-      <div 
-        v-if="state === 3"
-        class="game-over"
-      >
+      <div v-if="state === 3" class="game-over">
         <div>Game Over 😢</div>
         <button @click="startGame">Restart</button>
       </div>
@@ -47,9 +44,6 @@ export default {
     const router = useRouter();
 
     const state = gameState.GameState;
-
-    //guard
-    console.log(state.value);
 
     onMounted(() => {
       if (gameState.GameState.value === PossibleGameState.startMenu) {
@@ -144,6 +138,5 @@ export default {
   display: flex;
   flex-direction: column;
   font-size: 60px;
-
 }
 </style>

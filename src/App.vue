@@ -12,7 +12,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted } from "vue";
 import { useGamePlayProvider } from "./Providers/GamePlayProvider";
-import { useGameStateProvider } from "./Providers/GameStateProvider";
+import { useGameStateContext, useGameStateProvider, PossibleGameState } from "./Providers/GameStateProvider";
 import { useInputMapProvider } from "./Providers/InputMapProvider";
 import Game from "./components/Game.vue";
 import GameHUD from "./components/GameHUD.vue";
@@ -23,10 +23,13 @@ export default defineComponent({
   setup() {
     const inputMap = useInputMapProvider();
     useGamePlayProvider();
-    useGameStateProvider();
+    const { GameState } = useGameStateProvider();
+
 
     const captureKeys = (event) => {
-      inputMap.captureKeyUp(event.key);
+      if(GameState.value === PossibleGameState.ongoing) {
+        inputMap.captureKeyUp(event.key);
+      }
     };
 
     onMounted(() => {
